@@ -6,6 +6,7 @@ import './App.css'
 // Toast notification dependencies
 import { ToastContainer, toast } from 'react-toastify'
 
+const baseURL = 'https://joes-autos.herokuapp.com/api'
 class App extends Component {
   constructor(props) {
     super(props)
@@ -29,7 +30,14 @@ class App extends Component {
   }
 
   getVehicles() {
-    // axios (GET)
+    axios.get(`${baseURL}/vehicles`).then(res => {
+      this.setState({
+        vehiclesToDisplay: res.data
+      })
+      toast.success('got the vehicles bitch')
+    }).catch(err => {
+      toast.error(err.message)
+    })
     // setState with response -> vehiclesToDisplay
   }
 
@@ -39,8 +47,15 @@ class App extends Component {
   }
 
   sellCar(id) {
-    // axios (DELETE)
-    // setState with response -> vehiclesToDisplay
+    axios.delete(`${baseURL}/vehicles/${id}`).then(res => {
+      this.setState({
+        vehiclesToDisplay: res.data.vehicles
+      })
+      toast.success('its gone bitch')
+    })
+      .catch((err) => {
+        toast.error(err.message)
+      })
   }
 
   filterByMake() {
@@ -58,8 +73,15 @@ class App extends Component {
   }
 
   updatePrice(priceChange, id) {
-    // axios (PUT)
-    // setState with response -> vehiclesToDisplay
+    axios.put(`${baseURL}/vehicles/${id}/${priceChange}`).then(res => {
+      this.setState({
+        vehiclesToDisplay: res.data.vehicles
+      })
+      toast.success('Price changed bitch')
+    }
+    ).catch((err) => {
+      toast.error(err.message)
+    })// setState with response -> vehiclesToDisplay
   }
 
   addCar() {
@@ -71,6 +93,17 @@ class App extends Component {
       price: this.price.value,
     }
 
+    axios
+      .post(`${baseURL}/vehicles`, newCar)
+      .then(res => {
+        this.setState({
+          vehiclesToDisplay: res.data.vehicles
+        })
+        toast.success('car added bitch')
+      })
+      .catch((err) => {
+        toast.error(err.message)
+      })
     // axios (POST)
     // setState with response -> vehiclesToDisplay
   }
